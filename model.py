@@ -22,9 +22,8 @@ class Game:
             self.board[point[0]][point[1]] = 1 if player_num == 0 else 2
 
         elif turn_type == 'put':
-
             self.players[player_num].put_block()
-            self.board[point[0]][point[1]] == -1
+            self.board[point[0]][point[1]] = -1
 
     def is_blocked(self, way, player_num):
         firtspos = self.players[player_num].get_pos()

@@ -1,13 +1,13 @@
 import colorama
 import os
-
+import time
 colorama.init()
 
 
 class Menu:
     def __init__(self):
         print(
-            'This game is controlled with arrows keys and some extra keys\n(Hints will be showed you when it will be needed)\n(Be sure you use English layout)\nPress ENTER to continue')
+            'This game is controlled with arrows keys and some extra keys\n(Hints will be showed you when it will be needed) Menu confirm key is SPACE\n(Be sure you use English layout)\nPress SPACE to continue')
         self.menu_text = ['Start player vs player', 'Start player vs noob AI', 'Start player vs master AI',
                           'Start noob AI vs master AI', 'Exit']
 
@@ -61,8 +61,25 @@ class Board:
 
     def game_over(self, player):
         os.system('cls||clear')
-        print(f'Player {player} won!!!!')
+        print(f'Player {player+1} won!!!!')
 
 
-    def input_point(self):
-            pass
+
+
+    def input_point(self, err):
+            time.sleep(0.1)
+            if err != '':
+                print(colorama.Fore.RED + err + colorama.Fore.WHITE + '. Please try again')
+            print(colorama.Fore.WHITE + 'Input coordinates splitted with space.(Example:4 6) Type esc to switch on move mode. Press ENTER to confirm your coordinates  ')
+            ans = input()
+            coord = ans.split(' ')
+            if ans == 'esc':
+                return [ans]
+
+            if len(coord) == 2 and -2 < int(coord[0])-1 < 9 and -2 < int(coord[1])-1 < 9:
+                return [int(coord[0])-1,int(coord[1])-1]
+            return ['-1']
+
+
+    def blocks_error(self):
+        print('You don`t have any blocks available')

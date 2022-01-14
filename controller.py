@@ -1,15 +1,13 @@
-import sys
-
 import keyboard
-import time
 import model, view
-
+import time
+import sys
 
 class Start:
     def __init__(self):
         self.main_menu = view.Menu()
         while True:
-            if keyboard.is_pressed('enter'):
+            if keyboard.is_pressed('space'):
                 self.main_menu.show_menu(0)
                 self.menu_control()
                 break
@@ -29,8 +27,9 @@ class Start:
                     pos += 1
                     self.main_menu.show_menu(pos)
                     time.sleep(0.15)
-            elif keyboard.is_pressed('enter'):
+            elif keyboard.is_pressed('space'):
                 if pos == 4:
+                    time.sleep(0.1)
                     sys.exit()
                 if pos == 0:
                     self.go_game('PvP')
@@ -61,7 +60,7 @@ class Start:
             while True:
                 if kkey != 0:
                     break
-                self.previous_block = []
+                self.previous_block = [[], []]
                 self.previous_point = [self.new_game.players[0].get_pos(), self.new_game.players[1].get_pos()]
                 while True:
                     if kkey != 0:
@@ -151,4 +150,36 @@ class Start:
 
                             time.sleep(0.1)
                             continue
+                    elif keyboard.is_pressed('P'):
+
+                        if self.new_game.players[player_num].get_blocks() == 0:
+                            self.new_board.blocks_error()
+                            continue
+                        err = ''
+                        while True:
+                            coords = self.new_board.input_point(err)
+                            if coords[0] == '-1':
+                                err = 'Inputted wrong data'
+                            elif coords[0] == 'esc':
+                                break
+                            elif self.new_game.get_board()[coords[0]][coords[1]] != 0:
+                                err = 'This cell is not available'
+                            else:
+                                self.previous_block[player_num] = coords
+                                self.new_game.make_turn(player_num, 'put', coords)
+                                pp = player_num
+                                player_num = (player_num + 1) % 2
+                                self.turn += 1
+                                coords[0] += 1
+                                coords[1] += 1
+                                self.new_board.show_board(player_num, self.new_game.get_board(),
+                                                          self.new_game.get_blocks(player_num), 2, self.turn,
+                                                          [], self.previous_block[pp], '')
+                                break
+
+                    elif keyboard.is_pressed('escape'):
+                        kkey = 1
+
+
+
             return 0
