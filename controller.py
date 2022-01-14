@@ -17,19 +17,19 @@ class Start:
 
     def menu_control(self):
         pos = 0
-
+        self.main_menu.show_menu(pos)
         while True:
-            self.main_menu.show_menu(pos)
+            time.sleep(0.04)
             if keyboard.is_pressed('up'):
                 if pos > 0:
                     pos -= 1
                     self.main_menu.show_menu(pos)
-                    time.sleep(0.08)
+                    time.sleep(0.15)
             elif keyboard.is_pressed('down'):
                 if pos < 4:
                     pos += 1
                     self.main_menu.show_menu(pos)
-                    time.sleep(0.08)
+                    time.sleep(0.15)
             elif keyboard.is_pressed('enter'):
                 if pos == 4:
                     sys.exit()
@@ -46,8 +46,16 @@ class Start:
                     self.new_game('AIn_v_AIm')
                     continue
 
+
     def new_game(self, type):
-        pass
+
+        if type == 'PvP':
+            newgame = model.Game(type)
+            turn = 1
+            newboard = view.Board(newgame.get_board(), 2)
+            while True:
+                player_num = (turn + 1) % 2
+
 
 
 
