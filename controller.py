@@ -5,7 +5,6 @@ import time
 import model, view
 
 
-
 class Start:
     def __init__(self):
         self.main_menu = view.Menu()
@@ -34,29 +33,122 @@ class Start:
                 if pos == 4:
                     sys.exit()
                 if pos == 0:
-                    self.new_game('PvP')
+                    self.go_game('PvP')
+                    self.main_menu.show_menu(pos)
                     continue
                 elif pos == 1:
-                    self.new_game('PvAIn')
+                    self.go_game('PvAIn')
+                    self.main_menu.show_menu(pos)
                     continue
                 elif pos == 2:
-                    self.new_game('PvAIm')
+                    self.go_game('PvAIm')
+                    self.main_menu.show_menu(pos)
                     continue
                 elif pos == 3:
-                    self.new_game('AIn_v_AIm')
+                    self.go_game('AIn_v_AIm')
+                    self.main_menu.show_menu(pos)
                     continue
 
-
-    def new_game(self, type):
+    def go_game(self, type):
 
         if type == 'PvP':
-            newgame = model.Game(type)
-            turn = 1
-            newboard = view.Board(newgame.get_board(), 2)
+            self.new_game = model.Game(type)
+            self.turn = 1
+            player_num = 0
+            key = 0
+            kkey = 0
+            self.new_board = view.Board(self.new_game.get_board(), 2)
             while True:
-                player_num = (turn + 1) % 2
+                if kkey != 0:
+                    break
+                self.previous_block = []
+                self.previous_point = [self.new_game.players[0].get_pos(), self.new_game.players[1].get_pos()]
+                while True:
+                    if kkey != 0:
+                        break
+                    point = []
+                    if keyboard.is_pressed('up'):
+                        if self.new_game.is_blocked('up', player_num):
+                            self.new_board.show_board(player_num, self.new_game.get_board(), self.new_game.get_blocks(player_num), 2, self.turn,
+                                                      [], [], 'Error:way is blocked')
+                        else:
+                            point.append(self.previous_point[player_num][0] - 1)
+                            point.append(self.previous_point[player_num][1])
+                            if (player_num == 0 and point[0] == 0) or (player_num == 1 and point[0] == 8):
+                                self.new_board.game_over(player_num)
+                                kkey = 1
+                                time.sleep(5)
+                            self.new_game.make_turn(player_num, 'move', point)
+                            self.turn += 1
+                            pp = player_num
+                            player_num = (player_num + 1) % 2
+                            self.new_board.show_board(player_num, self.new_game.get_board(), self.new_game.get_blocks(player_num), 2,self.turn,
+                                                      self.previous_point[player_num], [], '')
+                            self.previous_point[pp] = point
 
+                            time.sleep(0.1)
+                            continue
+                    elif keyboard.is_pressed('down'):
+                        if self.new_game.is_blocked('down',player_num):
+                            self.new_board.show_board(player_num, self.new_game.get_board(), self.new_game.get_blocks(player_num), 2, self.turn,
+                                                      [], [], 'Error:way is blocked')
+                        else:
+                            point.append(self.previous_point[player_num][0] + 1)
+                            point.append(self.previous_point[player_num][1])
+                            if (player_num == 0 and point[0] == 0) or (player_num == 1 and point[0] == 8):
+                                self.new_board.game_over(player_num)
+                                time.sleep(5)
+                                kkey = 1
+                            self.new_game.make_turn(player_num, 'move', point)
+                            self.turn += 1
+                            pp = player_num
+                            player_num = (player_num + 1) % 2
+                            self.new_board.show_board(player_num, self.new_game.get_board(), self.new_game.get_blocks(player_num), 2,self.turn,
+                                                      self.previous_point[player_num], [], '')
+                            self.previous_point[pp] = point
 
+                            time.sleep(0.1)
+                            continue
+                    elif keyboard.is_pressed('left'):
+                        if self.new_game.is_blocked('left',player_num):
+                            self.new_board.show_board(player_num, self.new_game.get_board(), self.new_game.get_blocks(player_num), 2, self.turn,
+                                                      [], [], 'Error:way is blocked')
+                        else:
+                            point.append(self.previous_point[player_num][0])
+                            point.append(self.previous_point[player_num][1] - 1)
+                            if (player_num == 0 and point[0] == 0) or (player_num == 1 and point[0] == 8):
+                                self.new_board.game_over(player_num)
+                                kkey = 1
+                                time.sleep(5)
+                            self.new_game.make_turn(player_num, 'move', point)
+                            self.turn += 1
+                            pp = player_num
+                            player_num = (player_num + 1) % 2
+                            self.new_board.show_board(player_num, self.new_game.get_board(), self.new_game.get_blocks(player_num), 2,self.turn,
+                                                      self.previous_point[player_num], [], '')
+                            self.previous_point[pp] = point
 
+                            time.sleep(0.1)
+                            continue
+                    elif keyboard.is_pressed('right'):
+                        if self.new_game.is_blocked('right',player_num):
+                            self.new_board.show_board(player_num, self.new_game.get_board(), self.new_game.get_blocks(player_num), 2, self.turn,
+                                                      [], [], 'Error:way is blocked')
+                        else:
+                            point.append(self.previous_point[player_num][0])
+                            point.append(self.previous_point[player_num][1] + 1)
+                            if (player_num == 0 and point[0] == 0) or (player_num == 1 and point[0] == 8):
+                                self.new_board.game_over(player_num)
+                                kkey = 1
+                                time.sleep(5)
+                            self.new_game.make_turn(player_num, 'move', point)
+                            self.turn += 1
+                            pp = player_num
+                            player_num = (player_num + 1) % 2
+                            self.new_board.show_board(player_num, self.new_game.get_board(), self.new_game.get_blocks(player_num), 2,self.turn,
+                                                      self.previous_point[player_num], [], '')
+                            self.previous_point[pp] = point
 
-
+                            time.sleep(0.1)
+                            continue
+            return 0
