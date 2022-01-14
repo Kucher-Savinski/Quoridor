@@ -153,7 +153,9 @@ class Start:
                     elif keyboard.is_pressed('P'):
 
                         if self.new_game.players[player_num].get_blocks() == 0:
-                            self.new_board.blocks_error()
+                            self.new_board.show_board(player_num, self.new_game.get_board(),
+                                                      self.new_game.get_blocks(player_num), 2, 1,
+                                                      [], [], 'Error:you don`t have any blocks')
                             continue
                         err = ''
                         while True:
@@ -179,6 +181,10 @@ class Start:
 
                     elif keyboard.is_pressed('escape'):
                         kkey = 1
+
+            if type == 'PvAIn' or type == 'PvAIm':
+                self.new_game = model.Game(type)
+                self.new_board = view.Board(self.new_game.get_board(), 1)
 
 
 

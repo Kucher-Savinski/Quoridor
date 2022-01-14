@@ -58,6 +58,8 @@ class Board:
             print(f'(Press ESCAPE to go to main menu)')
             if err != '':
                 print(err)
+        elif players == 1:
+            pass
 
     def game_over(self, player):
         os.system('cls||clear')
