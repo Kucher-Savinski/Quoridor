@@ -107,61 +107,16 @@ class Game:
                     if matrix[i][j] == 0:
                         V.append(i*9+(j+1))
                         E[i * 9 + (j + 1)] = []
-                        if i == 0 and j == 0:
+                        if i - 1 != -1:
+                            if matrix[i - 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
+                        if j - 1 != -1:
+                            if matrix[i][j - 1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + j)
+                        if j + 1 != 9:
                             if matrix[i][j+1] == 0:
                                 E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
-                            if matrix[i + 1][j] == 0:
-                                E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
-                        elif i == 0 and 0 < j < 8:
-                            if matrix[i][j - 1] == 0:
-                                E[i * 9 + (j + 1)].append(i * 9 + j)
-                            if matrix[i][j+1] == 0:
-                                E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
-                            if matrix[i + 1][j] == 0:
-                                E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
-                        elif i == 0 and j == 8:
-                            if matrix[i][j - 1] == 0:
-                                E[i * 9 + (j + 1)].append(i * 9 + j)
-                            if matrix[i + 1][j] == 0:
-                                E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
-                        elif i == 8 and j == 0:
-                            if matrix[i - 1][j] == 0:
-                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
-                            if matrix[i][j+1] == 0:
-                                E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
-                        elif i == 8 and 0 < j < 8:
-                            if matrix[i - 1][j] == 0:
-                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
-                            if matrix[i][j - 1] == 0:
-                                E[i * 9 + (j + 1)].append(i * 9 + j)
-                            if matrix[i][j + 1] == 0:
-                                E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
-                        elif i == 8 and j == 8:
-                            if matrix[i - 1][j] == 0:
-                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
-                            if matrix[i][j - 1] == 0:
-                                E[i * 9 + (j + 1)].append(i * 9 + j)
-                        elif 0 < i < 8 and j == 0:
-                            if matrix[i - 1][j] == 0:
-                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
-                            if matrix[i][j + 1] == 0:
-                                E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
-                            if matrix[i + 1][j] == 0:
-                                E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
-                        elif 0 < i < 8 and 0 < j < 8:
-                            if matrix[i - 1][j] == 0:
-                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
-                            if matrix[i][j - 1] == 0:
-                                E[i * 9 + (j + 1)].append(i * 9 + j)
-                            if matrix[i][j + 1] == 0:
-                                E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
-                            if matrix[i + 1][j] == 0:
-                                E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
-                        elif 0 < i < 8 and j == 8:
-                            if matrix[i - 1][j] == 0:
-                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
-                            if matrix[i][j - 1] == 0:
-                                E[i * 9 + (j + 1)].append(i * 9 + j)
+                        if i + 1 != 9:
                             if matrix[i + 1][j] == 0:
                                 E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
 
@@ -191,6 +146,9 @@ class Game:
             for i in range(9):
                 if k == 0:
                     if d[72 + i + 1] != -1 and d[72 + i + 1] != 99999:
+                        kkey += 1
+                else:
+                    if d[i + 1] != -1 and d[i + 1] != 99999:
                         kkey += 1
             if kkey > 0:
                 key += 1
