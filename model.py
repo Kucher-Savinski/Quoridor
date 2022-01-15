@@ -1,4 +1,13 @@
 import random
+def minimum(arr, U):
+    minim = 999999999
+    pos = -1
+    for i in range(len(arr)):
+        if arr[i] < minim and arr[i] > -1 and arr[i] not in U:
+            minim = arr[i]
+            pos = i
+    return pos
+
 class Game:
     def __init__(self, type):
         self.gametype = type
@@ -81,6 +90,115 @@ class Game:
                 return True
         return False
 
+    def is_route(self, point):
+        key = -2
+        for k in range(2):
+            matrix = []
+            matrix.copy(self.board)
+            matrix[point[0]][point[1]] = -1
+            aa = self.players[k].get_pos()
+            a = aa[0]*9 + (aa[1] + 1)
+            E = {}
+            V = []
+            U = []
+            d = []
+            for i in range(9):
+                for j in range(9):
+                    if matrix[i][j] == 0:
+                        V.append(i*9+(j+1))
+                        E[i * 9 + (j + 1)] = []
+                        if i == 0 and j == 0:
+                            if matrix[i][j+1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
+                            if matrix[i + 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
+                        elif i == 0 and 0 < j < 8:
+                            if matrix[i][j - 1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + j)
+                            if matrix[i][j+1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
+                            if matrix[i + 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
+                        elif i == 0 and j == 8:
+                            if matrix[i][j - 1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + j)
+                            if matrix[i + 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
+                        elif i == 8 and j == 0:
+                            if matrix[i - 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
+                            if matrix[i][j+1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
+                        elif i == 8 and 0 < j < 8:
+                            if matrix[i - 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
+                            if matrix[i][j - 1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + j)
+                            if matrix[i][j + 1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
+                        elif i == 8 and j == 8:
+                            if matrix[i - 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
+                            if matrix[i][j - 1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + j)
+                        elif 0 < i < 8 and j == 0:
+                            if matrix[i - 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
+                            if matrix[i][j + 1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
+                            if matrix[i + 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
+                        elif 0 < i < 8 and 0 < j < 8:
+                            if matrix[i - 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
+                            if matrix[i][j - 1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + j)
+                            if matrix[i][j + 1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
+                            if matrix[i + 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
+                        elif 0 < i < 8 and j == 8:
+                            if matrix[i - 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
+                            if matrix[i][j - 1] == 0:
+                                E[i * 9 + (j + 1)].append(i * 9 + j)
+                            if matrix[i + 1][j] == 0:
+                                E[i * 9 + (j + 1)].append((i + 1) * 9 + (j + 1))
+
+            for i in range(81):
+                if i == a:
+                    d.append(0)
+                    apos = i
+                else:
+                    if i in V:
+                        d.append(99999)
+                    else:
+                        d.append(-1)
+            v = minimum(d, U)
+
+            while True:
+                U.append(v)
+                for i in range(len(E[a])):
+                    if E[v][i] not in U:
+                        if d[E[v][i]] > d[v]:
+                            d[E[v][i]] = d[v] + 1
+                if minimum(d, U) == -1:
+                    break
+                else:
+                    v = minimum(d, U)
+
+            kkey = 0
+            for i in range(9):
+                if k == 0:
+                    if d[72 + i + 1] != -1 and d[72 + i + 1] != 99999:
+                        kkey += 1
+            if kkey > 0:
+                key += 1
+        if key == 0:
+            return True
+        return False
+
+
     def get_board(self):
         return self.board
 
@@ -90,7 +208,7 @@ class Game:
 
 class Player:
     def __init__(self, number):
-        self.blocks = 1
+        self.blocks = 10
         if number == 1:
             self.position = [8, 4]
         elif number == 2:
@@ -118,6 +236,7 @@ class AI_noob(Player):
         else:
             way = random.randint(1, 5)
             return [way]
+
 
 
 

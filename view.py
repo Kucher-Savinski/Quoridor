@@ -8,13 +8,12 @@ class Menu:
     def __init__(self):
         print(
             'This game is controlled with arrows keys and some extra keys\n(Hints will be showed you when it will be needed) Menu confirm key is SPACE\n(Be sure you use English layout)\nPress SPACE to continue')
-        self.menu_text = ['Start player vs player', 'Start player vs noob AI', 'Start player vs master AI',
-                          'Start noob AI vs master AI', 'Exit']
+        self.menu_text = ['Start player vs player', 'Start player vs noob AI', 'Exit']
 
     def show_menu(self, pos):
         int(pos)
         os.system('cls||clear')
-        for i in range(5):
+        for i in range(3):
             if (i == pos):
                 print(colorama.Fore.YELLOW + self.menu_text[i])
             else:
@@ -49,9 +48,9 @@ class Board:
 
         if players == 2:
             if turn != 1:
-                if prev_point == []:
+                if not prev_point:
                     print(f'On previous turn player {2 if player_num == 0 else 1}({player1_icon if player_num == 1 else player2_icon}) puts block on position{prev_block}')
-                elif prev_block == []:
+                elif not prev_block:
                     print(f'On previous turn player {2 if player_num == 0 else 1}({player1_icon if player_num == 1 else player2_icon}) moves on position{prev_point}')
 
             print(f'Now is player {player_num+1}({player1_icon if player_num == 0 else player2_icon}) turn, please make move with ARROWS or put block with P( blocks left: {blocks})')
@@ -59,7 +58,16 @@ class Board:
             if err != '':
                 print(err)
         elif players == 1:
-            pass
+            if turn != 1:
+                if not prev_point:
+                    print(f'On previous turn Computer puts block on position{prev_block}')
+                elif not prev_block:
+                    print(f'On previous turn Computer moves on position{prev_point}')
+            print(
+                f'Now is player turn, please make move with ARROWS or put block with P( blocks left: {blocks})')
+            print(f'(Press ESCAPE to go to main menu)')
+            if err != '':
+                print(err)
 
     def game_over(self, player):
         os.system('cls||clear')
@@ -81,7 +89,3 @@ class Board:
             if len(coord) == 2 and -2 < int(coord[0])-1 < 9 and -2 < int(coord[1])-1 < 9:
                 return [int(coord[0])-1,int(coord[1])-1]
             return ['-1']
-
-
-    def blocks_error(self):
-        print('You don`t have any blocks available')
