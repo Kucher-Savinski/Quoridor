@@ -96,7 +96,8 @@ class Game:
             matrix = []
             matrix.copy(self.board)
             matrix[point[0]][point[1]] = -1
-            aa = self.players[k].get_pos()
+            aa = []
+            aa.copy(self.players[k].get_pos())
             a = aa[0]*9 + (aa[1] + 1)
             E = {}
             V = []
