@@ -44,27 +44,54 @@ class Game:
         key = 0
         if self.dijkstra(1)[2] == 2 and key != 1:
             self.state = 'defence'
-            key += 1
         else:
             self.state = 'shock'
+
+        if self.state == 'defence':
+            type = 'wall'
+            block = 'h'
+
+            if self.player_winline == 0:
+                if self.block_points[self.player_coord[0] - 1][self.player_coord[1]] == '' and self.block_points[self.player_coord[0] - 1][self.player_coord[1] - 1] == '' and self.block_points[self.player_coord[0] - 1][self.player_coord[1] + 1] == '':
+                    point = [self.player_coord[0] - 1, self.player_coord[1]]
+                    self.make_turn(type, [self.player_coord[0] - 1, self.player_coord[1]], block)
+                elif self.block_points[self.player_coord[0] - 1][self.player_coord[1] - 1] == '' and self.block_points[self.player_coord[0] - 1][self.player_coord[1] - 2] == '' and self.block_points[self.player_coord[0] - 1][self.player_coord[1]] == '':
+                    point = [self.player_coord[0] - 1, self.player_coord[1] - 1]
+                    self.make_turn(type, [self.player_coord[0] - 1, self.player_coord[1] - 1], block)
+                elif (self.block_points[self.player_coord[0] - 1][self.player_coord[1] - 1] == 'h' or self.block_points[self.player_coord[0] - 1][self.player_coord[1] - 1] == '') \
+                    and (self.block_points[self.player_coord[0] - 1][self.player_coord[1] - 3] == 'h' or self.block_points[self.player_coord[0] - 1][self.player_coord[1] - 3] == ''):
+                    point = [self.player_coord[0] - 1, self.player_coord[1] - 1]
+                    self.make_turn(type, [self.player_coord[0] - 1, self.player_coord[1] - 1], block)
+                else:
+                    self.state == 'shock'
+            else:
+                if self.block_points[self.player_coord[0]][self.player_coord[1]] == '' and self.block_points[self.player_coord[0]][self.player_coord[1] - 1] == '' and self.block_points[self.player_coord[0]][self.player_coord[1] + 1] == '':
+                    point = [self.player_coord[0], self.player_coord[1]]
+                    self.make_turn(type, [self.player_coord[0], self.player_coord[1]], block)
+                elif self.block_points[self.player_coord[0]][self.player_coord[1] - 2] == '' and self.block_points[self.player_coord[0] ][self.player_coord[1] - 2] == '' and self.block_points[self.player_coord[0]][self.player_coord[1] - 1] == '':
+                    point = [self.player_coord[0], self.player_coord[1] - 1]
+                    self.make_turn(type, [self.player_coord[0], self.player_coord[1] - 1], block)
+                elif (self.block_points[self.player_coord[0]][self.player_coord[1] - 1] == 'h' or self.block_points[self.player_coord[0]][self.player_coord[1] - 1] == '') \
+                    and (self.block_points[self.player_coord[0]][self.player_coord[1] - 3] == 'h' or self.block_points[self.player_coord[0]][self.player_coord[1] - 3] == ''):
+                    point = [self.player_coord[0], self.player_coord[1] - 1]
+                    self.make_turn(type, [self.player_coord[0], self.player_coord[1] - 1], block)
+                else:
+                    self.state == 'shock'
+
+
+
         if self.state == 'shock':
             num = self.dijkstra(2)[1]
             point.append(num[0])
             point.append(num[1])
-            if point[0] != 0 and self.board[point[0]][point[1]] == 1:
-                type = 'jump'
-                point[0] -= 1
-            else:
-                type = 'move'
+
+            type = self.dijkstra(2)[3]
             self.make_turn(type, point, '')
-        elif self.state == 'defence':
-            type = 'wall'
-            block = 'h'
-            self.make_turn(type, [self.player_coord[0] - 1, self.player_coord[1]], block)
-            point = [self.player_coord[0] - 1, self.player_coord[1]]
+
         return [type, point, block]
 
     def dijkstra(self, player):
+        movetype = 'move'
         matrix = []
         matrix = self.board.copy()
         aa = []
@@ -94,6 +121,7 @@ class Game:
                         elif self.block_points[i - 1][j] != 'h' and self.block_points[i - 1][j - 1] != 'h' and matrix[i - 1][j] == opponent:
                             if i > 2 and self.block_points[i - 2][j] != 'h' and self.block_points[i - 2][j - 1] != 'h':
                                 E[i * 9 + (j + 1)].append((i - 2) * 9 + (j + 1))
+
                     elif i - 1 != -1 and j == 0:
                         if self.block_points[i - 1][j] != 'h':
                             E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
@@ -102,29 +130,29 @@ class Game:
                             E[i * 9 + (j + 1)].append((i - 1) * 9 + (j + 1))
 
                     if j - 1 != -1 and 0 < i < 8:
-                        if self.block_points[i][j-1] != 'w' and self.block_points[i - 1][j-1] != 'w' and matrix[i][j - 1] != opponent:
+                        if self.block_points[i][j-1] != 'v' and self.block_points[i - 1][j-1] != 'v' and matrix[i][j - 1] != opponent:
                             E[i * 9 + (j + 1)].append(i * 9 + j)
-                        elif self.block_points[i][j-1] != 'w' and self.block_points[i - 1][j-1] != 'w' and matrix[i][j - 1] == opponent:
-                            if j > 1 and self.block_points[i][j-1] != 'w' and self.block_points[i - 1][j-1] != 'w':
+                        elif self.block_points[i][j-1] != 'v' and self.block_points[i - 1][j-1] != 'v' and matrix[i][j - 1] == opponent:
+                            if j > 1 and self.block_points[i][j-1] != 'v' and self.block_points[i - 1][j-1] != 'v':
                                 E[i * 9 + (j + 1)].append(i * 9 + j - 1)
                     elif j - 1 != -1 and i == 0 :
-                        if self.block_points[i][j-1] != 'w':
+                        if self.block_points[i][j-1] != 'v':
                             E[i * 9 + (j + 1)].append(i * 9 + j)
                     elif j - 1 != -1 and i == 8 :
-                        if self.block_points[i - 1][j-1] != 'w':
+                        if self.block_points[i - 1][j-1] != 'v':
                             E[i * 9 + (j + 1)].append(i * 9 + j)
 
                     if j + 1 != 9 and 0 < i < 8:
-                        if self.block_points[i][j] != 'w' and self.block_points[i - 1][j] != 'w' and matrix[i][j + 1] != opponent:
+                        if self.block_points[i][j] != 'v' and self.block_points[i - 1][j] != 'v' and matrix[i][j + 1] != opponent:
                             E[i * 9 + (j + 1)].append(i * 9 + (j + 2))
-                        elif self.block_points[i][j] != 'w' and self.block_points[i - 1][j] != 'w' and matrix[i][j + 1] == opponent:
-                            if j < 7 and self.block_points[i][j] != 'w' and self.block_points[i - 1][j] != 'w':
+                        elif self.block_points[i][j] != 'v' and self.block_points[i - 1][j] != 'v' and matrix[i][j + 1] == opponent:
+                            if j < 7 and self.block_points[i][j] != 'v' and self.block_points[i - 1][j] != 'v':
                                 E[i * 9 + (j + 1)].append(i * 9 + (j + 3))
                     elif j + 1 != 9 and i == 0 :
-                        if self.block_points[i][j] != 'w':
+                        if self.block_points[i][j] != 'v':
                             E[i * 9 + (j + 1)].append(i * 9 + (j+2))
                     elif j + 1 != 9 and i == 8 :
-                        if self.block_points[i - 1][j] != 'w':
+                        if self.block_points[i - 1][j] != 'v':
                             E[i * 9 + (j + 1)].append(i * 9 + (j+2))
 
                     if i + 1 != 9 and 0 < j < 8:
@@ -202,7 +230,11 @@ class Game:
         minpoint.append(minway[0] // 9)
         minpoint.append((minway[0] % 9) - 1)
         mindist = d[min_d - 1]
-        return [minway, minpoint, mindist]
+        if minpoint[0] > 0 and abs(minpoint[0] - self.player_coord[0]) == 2 and player == 1:
+            movetype = 'jump'
+        elif minpoint[0] > 0 and abs(minpoint[0] - self.bot_coord[0]) == 2 and player == 2:
+            movetype = 'jump'
+        return [minway, minpoint, mindist, movetype]
 
     def make_turn(self, type, point, block_type):
         if type == 'move' or type == 'jump':
